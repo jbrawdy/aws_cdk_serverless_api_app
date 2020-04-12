@@ -34,6 +34,8 @@ export class ServerlessCdkStack extends cdk.Stack {
     const apiHello = api.root.addResource('hello');
     apiHello.addMethod('GET', apiHelloInteg);
 
+
+
     // --- user input lambda ----
     const createLambda = new lambda.Function(this, 'CreateHandler', {
         runtime: lambda.Runtime.NODEJS_10_X,
@@ -42,16 +44,32 @@ export class ServerlessCdkStack extends cdk.Stack {
     });
 
 
-    // --- table permisions ---
-    table.grantReadWriteData(createLambda);
- 
 
     // --- user input lambda integration ---
     const apiCreateInteg = new apigw.LambdaIntegration(createLambda);
     const apiCreate = api.root.addResource('create');
     apiCreate.addMethod('POST', apiCreateInteg);
 
-    
+    // --- table permisions ---
+    table.grantReadWriteData(createLambda);
+
+
+    // --- user read lambda ----
+    const readLambda = new lambda.Function(this, 'ReadHandler', {
+        runtime: lambda.Runtime.NODEJS_10_X,
+        code: lambda.Code.fromAsset('lambda'),
+        handler: 'readuser.handler'
+    });
+
+  
+
+    // --- user read lambda integration ---
+    const apiReadInteg = new apigw.LambdaIntegration(readLambda);
+    const apiRead = api.root.addResource('read');
+    apiRead.addMethod('GET', apiReadInteg);
+
+    // --- table read permisions ---
+    table.grantReadData(readLambda);
 
   }
 }
