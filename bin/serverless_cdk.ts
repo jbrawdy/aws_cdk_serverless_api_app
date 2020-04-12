@@ -4,4 +4,8 @@ import * as cdk from '@aws-cdk/core';
 import { ServerlessCdkStack } from '../lib/serverless_cdk-stack';
 
 const app = new cdk.App();
-new ServerlessCdkStack(app, 'ServerlessCdkStack');
+new ServerlessCdkStack(app, 'ServerlessCdkStack', {
+    env: {
+        region: 'us-east-2'
+    }
+});
